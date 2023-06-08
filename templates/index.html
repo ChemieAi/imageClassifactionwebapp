@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Image Classification</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    h1{font-size:4rem;}
+    h2{font-size:2.5rem;}
+    body {background-color: #e0f1ff;}
+    .classification-btn{font-size: 1.5rem; cursor: pointer; border:1px solid black; padding: 2px 2px 2px 2px; background-color:#999; color:white;}
+    .classification-btn:hover{background-color:#6b6b6b}
+    </style>
+
+</head>
+
+<body>
+  <div class="container">
+    <h1>
+      <center>Image Classification With Keras</center>
+    </h1>
+    <center><form method="POST" action="predict" enctype="multipart/form-data" id="classificationForm">
+      <p><input type="file"  accept="image/*" name="file" id="file"  onchange="loadFile(event)" style="display: none;"></p>
+      <p><label class="classification-btn" for="file">Upload Image</label></p>
+      <p><input type="submit" value="Submit" id="submit" style="display: none;"></p>
+      <p><label class="classification-btn" for="submit">Classify</label></p>
+      
+    </form>
+  </center>
+    
+  </div>
+  <center>
+    <p><img id="output" width="300" /></p>
+    <h2 id= "classification"></h1>
+  </center>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+crossorigin="anonymous"></script>
+
+<script>
+  var loadFile = function(event) {
+    var image = document.getElementById('output');
+    image.src = URL.createObjectURL(event.target.files[0]);
+    image.style= "border:5px solid";
+  };
+  </script>
+<script>
+  $(document).ready(function (e) {
+    $('#classificationForm').on('submit',(function(e) {
+        e.preventDefault();
+        document.getElementById('classification').innerHTML = "";
+        var formData = new FormData(this);
+
+        $.ajax({
+            type:'POST',
+            url: $(this).attr('action'),
+            data:formData,
+            cache:false,
+            contentType: false,
+            processData: false,
+            success:function(data){
+                console.log("success");
+                console.log(data);
+                document.getElementById('classification').innerHTML = data.data;
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            }
+        });
+    }));
+  });
+
+</script>
+</html>
